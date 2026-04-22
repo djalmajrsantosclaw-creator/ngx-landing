@@ -3,457 +3,405 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NGX — iGaming Infrastructure</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<meta name="description" content="NGX — Plataforma whitelabel all-in-one para operadores de iGaming. Sportsbook, Casino, Pagamentos e Compliance."/>
+<title>NGX — Eleve Seu Jogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#02030C;
-  --bg2:#060812;
-  --green:#00FF88;
-  --green-dim:#00FF8830;
-  --blue:#2563EB;
-  --blue-bright:#3B82F6;
-  --red:#FF3366;
-  --white:#EEF0FF;
-  --muted:#3D3F5A;
-  --muted2:#5A5C7A;
-  --border:#0E1020;
-  --card:#080A18;
+  --bg:    #05060A;
+  --bg2:   #080B12;
+  --green: #00E87A;
+  --glow:  rgba(0,232,122,.12);
+  --white: #F0F0F0;
+  --muted: #5A5A6A;
+  --muted2:#3A3A4A;
+  --card:  #0C0E14;
+  --border:#151820;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden;cursor:none}
 ::selection{background:var(--green);color:#000}
 
-/* ── CURSOR ── */
-#c{width:8px;height:8px;background:var(--green);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
-#ct{width:32px;height:32px;border:1px solid #00FF8840;border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .1s ease}
+/* ─ CURSOR ─ */
+#cursor{width:10px;height:10px;background:var(--green);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s;mix-blend-mode:difference}
+#cursor-t{width:38px;height:38px;border:1px solid rgba(0,232,122,.35);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .11s ease}
 a,button{cursor:none}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:20px 48px}
-nav::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,3,12,.95) 0%,transparent 100%);z-index:-1}
-.logo{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:1px}
-.logo em{color:var(--green);font-style:normal}
-.nav-r{display:flex;align-items:center;gap:32px}
-.nav-r a{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--muted2);text-decoration:none;transition:color .2s}
-.nav-r a:hover{color:var(--white)}
-.nav-demo{border:1px solid var(--green);color:var(--green)!important;padding:9px 20px;border-radius:2px;transition:all .2s!important}
-.nav-demo:hover{background:var(--green)!important;color:#000!important}
+/* ─ NAV ─ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:22px 56px}
+nav::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,10,.92) 0%,transparent 100%);z-index:-1;pointer-events:none}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-0.5px}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;align-items:center;gap:40px}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s;font-weight:500}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{border:1px solid rgba(0,232,122,.4);color:var(--green)!important;padding:10px 24px;border-radius:4px;font-size:13px!important;letter-spacing:.5px;transition:all .2s!important}
+.nav-cta:hover{background:var(--green)!important;color:#000!important}
 
-/* ── HERO ── */
-#hero{position:relative;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 48px;overflow:hidden}
-.grid-canvas{position:absolute;inset:0;z-index:0}
-.hero-vignette{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 70% 70% at 65% 50%,rgba(0,255,136,.04) 0%,transparent 70%),radial-gradient(ellipse 100% 60% at 50% 100%,rgba(2,3,12,.9) 0%,transparent 60%)}
-.hero-left{position:relative;z-index:2;max-width:700px}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px;opacity:0;animation:fu .6s .2s forwards}
-.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--green)}
-.hero-h1{font-size:clamp(56px,8.5vw,130px);font-weight:700;line-height:.9;letter-spacing:-4px;margin-bottom:28px;opacity:0;animation:fu .8s .4s forwards}
-.hero-h1 .line2{display:block;color:transparent;-webkit-text-stroke:1px var(--muted);position:relative}
-.hero-h1 .glitch{position:relative;color:var(--green)}
-.hero-h1 .glitch::before,.hero-h1 .glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
-.hero-h1 .glitch::before{color:#ff3366;clip-path:polygon(0 0,100% 0,100% 45%,0 45%);animation:glitch1 4s infinite}
-.hero-h1 .glitch::after{color:#2563eb;clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%);animation:glitch2 4s infinite}
-.hero-sub{font-size:16px;color:var(--muted2);max-width:480px;line-height:1.8;margin-bottom:40px;opacity:0;animation:fu .7s .6s forwards}
-.hero-actions{display:flex;gap:16px;opacity:0;animation:fu .7s .8s forwards}
-.btn-g{padding:15px 32px;background:var(--green);color:#000;font-size:14px;font-weight:700;letter-spacing:.5px;text-decoration:none;border-radius:2px;transition:all .2s;display:inline-flex;align-items:center;gap:10px}
-.btn-g:hover{background:#00ffaa;transform:translateY(-2px);box-shadow:0 0 30px #00FF8830}
-.btn-o{padding:15px 28px;border:1px solid var(--border);color:var(--muted2);font-size:14px;text-decoration:none;border-radius:2px;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px}
-.btn-o:hover{border-color:var(--muted2);color:var(--white)}
+/* ─ HERO ─ */
+#hero{position:relative;height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 56px;gap:60px;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+.hero-grad{position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 50% 80% at 70% 50%,rgba(0,232,122,.05) 0%,transparent 65%),
+             linear-gradient(180deg,transparent 50%,rgba(5,6,10,.95) 100%)}
+.hero-left{position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.2);color:var(--green);padding:6px 14px;border-radius:99px;font-size:12px;font-weight:500;margin-bottom:28px;letter-spacing:.3px;opacity:0;animation:fu .6s .1s forwards}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.hero-h1{font-size:clamp(48px,6.5vw,88px);font-weight:700;line-height:.93;letter-spacing:-3px;margin-bottom:24px;opacity:0;animation:fu .8s .3s forwards}
+.hero-h1 em{font-style:normal;color:var(--green)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.75;max-width:440px;margin-bottom:40px;opacity:0;animation:fu .7s .5s forwards}
+.hero-btns{display:flex;gap:14px;opacity:0;animation:fu .7s .7s forwards}
+.btn-p{padding:15px 34px;background:var(--green);color:#000;font-size:14px;font-weight:700;text-decoration:none;border-radius:4px;transition:all .2s;letter-spacing:.3px}
+.btn-p:hover{background:#00ffaa;transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,232,122,.25)}
+.btn-s{padding:15px 26px;border:1px solid var(--border);color:var(--muted);font-size:14px;text-decoration:none;border-radius:4px;transition:all .2s}
+.btn-s:hover{border-color:var(--muted);color:var(--white)}
+.hero-meta{margin-top:48px;display:flex;gap:32px;opacity:0;animation:fu .7s .9s forwards}
+.hero-meta-item{display:flex;flex-direction:column;gap:4px}
+.hm-n{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--white)}
+.hm-l{font-size:12px;color:var(--muted);letter-spacing:.5px}
 
-/* Floating dashboard */
-.hero-dash{position:absolute;right:48px;top:50%;transform:translateY(-50%);z-index:2;width:420px;opacity:0;animation:fu .9s 1s forwards}
-.dash-window{background:rgba(8,10,24,.9);border:1px solid #0E1020;border-radius:8px;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.6),0 0 0 1px #FFFFFF05;backdrop-filter:blur(20px)}
-.dash-bar{background:#060810;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-.dot{width:10px;height:10px;border-radius:50%}
-.dash-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);margin-left:8px;letter-spacing:1px}
-.dash-body{padding:20px}
-.dash-metric{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #0E1020}
-.dash-metric:last-child{border-bottom:none}
-.dm-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:1px}
-.dm-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
-.dm-val.green{color:var(--green)}
-.dm-val.blue{color:var(--blue-bright)}
-.dm-val.white{color:var(--white)}
-.dash-chart{margin-top:16px;height:60px;display:flex;align-items:flex-end;gap:4px}
-.bar-col{flex:1;border-radius:2px 2px 0 0;transition:height .5s ease;background:linear-gradient(180deg,var(--green),rgba(0,255,136,.2))}
-.dash-status{margin-top:14px;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted2)}
-.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+/* hero right — floating card */
+.hero-right{position:relative;z-index:2;opacity:0;animation:fu .9s .6s forwards}
+.hero-card{background:rgba(12,14,20,.85);border:1px solid var(--border);border-radius:12px;overflow:hidden;backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03)}
+.hc-bar{background:rgba(5,6,10,.9);padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.hc-dot{width:11px;height:11px;border-radius:50%}
+.hc-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-left:8px;letter-spacing:.5px}
+.hc-body{padding:24px}
+.hc-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.hc-row:last-of-type{border-bottom:none}
+.hc-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.hc-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700}
+.hc-val.g{color:var(--green)}
+.hc-val.w{color:var(--white)}
+.hc-chart{margin-top:18px;height:64px;display:flex;align-items:flex-end;gap:5px}
+.hc-bar-col{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--green),rgba(0,232,122,.15));transition:height .6s ease}
+.hc-footer{display:flex;align-items:center;gap:8px;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.5px}
+.hc-pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.scroll-cue{position:absolute;bottom:36px;left:56px;z-index:2;display:flex;align-items:center;gap:12px;opacity:0;animation:fu .6s 1.3s forwards}
+.scroll-cue span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.scroll-line{width:40px;height:1px;background:linear-gradient(90deg,var(--green),transparent)}
 
-/* ── TICKER ── */
-.ticker-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;background:#030410;padding:0}
-.ticker-inner{display:flex;animation:ticker 30s linear infinite;width:max-content}
-.tick{padding:12px 40px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;white-space:nowrap;display:flex;align-items:center;gap:10px}
-.tick-label{color:var(--muted2)}
+/* ─ TICKER ─ */
+.ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;background:var(--bg2)}
+.ticker-inner{display:flex;animation:marquee 28s linear infinite;width:max-content}
+.tick-item{padding:13px 40px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;white-space:nowrap;color:var(--muted);display:flex;align-items:center;gap:10px}
 .tick-val{color:var(--green)}
-.tick-up{color:#00FF88}
-.tick-dn{color:#FF3366}
+.tick-dn{color:#FF4466}
 
-/* ── SECTION ── */
-.sec{padding:120px 48px}
-.stag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.stag::before{content:'';width:16px;height:1px;background:var(--green);display:block}
-h2{font-size:clamp(36px,5vw,68px);font-weight:700;letter-spacing:-2px;line-height:.95;margin-bottom:16px}
-.sint{font-size:16px;color:var(--muted2);line-height:1.8;max-width:480px}
+/* ─ SECTION ─ */
+.sec{padding:120px 56px}
+.stag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;color:var(--green);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.stag::before{content:'';display:block;width:18px;height:1px;background:var(--green)}
+h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,4.5vw,64px);font-weight:700;letter-spacing:-2px;line-height:.98;margin-bottom:18px}
+.sint{font-size:16px;color:var(--muted);line-height:1.8;max-width:500px}
 
-/* ── HOW IT WORKS / TERMINAL ── */
-#how{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;padding:120px 48px}
-.steps{display:flex;flex-direction:column;gap:0}
-.step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);position:relative}
-.step:last-child{border-bottom:none}
-.step-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:2px;flex-shrink:0;margin-top:4px;width:32px}
-.step-content h3{font-size:18px;font-weight:600;margin-bottom:8px}
-.step-content p{font-size:14px;color:var(--muted2);line-height:1.7}
-.step-tag{display:inline-block;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--green);border:1px solid var(--green-dim);padding:3px 10px;border-radius:2px}
+/* ─ WORK GRID ─ */
+#work{padding-bottom:0}
+.wh{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px}
+.wgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.wi{position:relative;overflow:hidden;background:var(--card)}
+.wi:nth-child(1){grid-column:span 7;aspect-ratio:16/9}
+.wi:nth-child(2){grid-column:span 5;aspect-ratio:4/3}
+.wi:nth-child(3){grid-column:span 5;aspect-ratio:4/3}
+.wi:nth-child(4){grid-column:span 7;aspect-ratio:16/9}
+.wi:nth-child(5){grid-column:span 6;aspect-ratio:4/3}
+.wi:nth-child(6){grid-column:span 6;aspect-ratio:4/3}
+.wi-bg{position:absolute;inset:0;transition:transform .9s cubic-bezier(.16,1,.3,1)}
+.wi:hover .wi-bg{transform:scale(1.07)}
+.wi-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(5,6,10,.95) 100%);opacity:0;transition:opacity .4s}
+.wi:hover .wi-ov{opacity:1}
+.wi-info{position:absolute;bottom:0;left:0;right:0;padding:28px;transform:translateY(8px);opacity:0;transition:all .4s}
+.wi:hover .wi-info{opacity:1;transform:none}
+.wi-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px}
+.wi-name{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
+.wi-sub{font-size:13px;color:var(--muted);margin-top:4px}
 
-/* Terminal */
-.terminal{background:#03040E;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5)}
-.term-bar{background:#060810;padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-.term-body{padding:24px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8}
-.t-prompt{color:var(--muted2)}
-.t-cmd{color:var(--white)}
-.t-comment{color:var(--muted)}
-.t-green{color:var(--green)}
-.t-blue{color:#60A5FA}
-.t-yellow{color:#FCD34D}
-.t-line{display:flex;gap:8px;margin-bottom:4px}
-.t-blink{display:inline-block;width:8px;height:14px;background:var(--green);animation:blink .8s infinite;vertical-align:middle}
+.g1{background:linear-gradient(135deg,#0A1A10 0%,#0E2A18 100%)}
+.g2{background:linear-gradient(135deg,#0E0A1F 0%,#1A0E30 100%)}
+.g3{background:linear-gradient(135deg,#1A0A0A 0%,#2A1010 100%)}
+.g4{background:linear-gradient(135deg,#0A0E1F 0%,#10162E 100%)}
+.g5{background:linear-gradient(135deg,#0E1A0A 0%,#182A10 100%)}
+.g6{background:linear-gradient(135deg,#1A180A 0%,#2A2610 100%)}
+/* subtle grid on cards */
+.wi-bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,122,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.025) 1px,transparent 1px);background-size:48px 48px}
 
-/* ── PLATFORM SPLIT ── */
-#platform{padding:0;display:grid;grid-template-columns:1fr 1fr;min-height:90vh}
-.plat-left{padding:100px 48px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)}
-.plat-right{background:var(--bg2);position:relative;overflow:hidden}
-.plat-grid{padding:40px;display:flex;flex-direction:column;gap:16px;height:100%}
-.plat-header{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.module-chip{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:4px;transition:all .3s}
-.module-chip:hover{border-color:rgba(0,255,136,.25);transform:translateX(4px)}
-.chip-icon{width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.chip-name{font-size:14px;font-weight:600;margin-bottom:2px}
-.chip-sub{font-size:12px;color:var(--muted2)}
-.chip-status{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px}
-.scan-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,.3),transparent);animation:scan 4s linear infinite}
-
-/* ── PROVIDERS ── */
-#prov{padding:80px 48px}
-.prov-scroll{display:flex;gap:2px;flex-wrap:wrap;margin-top:48px}
-.prov-chip{padding:14px 22px;background:var(--card);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted2);letter-spacing:.5px;transition:all .25s;border-radius:2px}
-.prov-chip:hover{color:var(--white);border-color:rgba(0,255,136,.2);background:#0C0E1E}
-
-/* ── STATS FULL ── */
-#stats{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr)}
-.sitem{padding:60px 48px;border-right:1px solid var(--border);position:relative;overflow:hidden}
-.sitem:last-child{border-right:none}
-.sitem::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);transform:scaleX(0);transition:transform .4s}
-.sitem:hover::before{transform:scaleX(1)}
-.s-num{font-family:'JetBrains Mono',monospace;font-size:52px;font-weight:700;line-height:1;color:var(--white);margin-bottom:8px}
-.s-num span{color:var(--green)}
-.s-lab{font-size:13px;color:var(--muted2)}
-
-/* ── CLIENTS ── */
-#clients{padding:100px 48px}
-.clients-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:48px}
-.client-card{background:var(--card);border:1px solid var(--border);padding:32px;display:flex;flex-direction:column;gap:12px;transition:all .3s;position:relative;overflow:hidden}
-.client-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);transform:scaleX(0);transition:transform .4s}
-.client-card:hover{background:#0A0C1C;border-color:#1A1C30}
-.client-card:hover::after{transform:scaleX(1)}
-.client-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700}
-.client-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--green)}
-.client-desc{font-size:13px;color:var(--muted2);line-height:1.6}
-
-/* ── MARQUEE ── */
-.marq-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
-.marq-inner{display:flex;animation:ticker 25s linear infinite;width:max-content}
-.marq-item{padding:16px 40px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted2);letter-spacing:2px;white-space:nowrap;text-transform:uppercase;transition:color .2s}
+/* ─ MARQUEE ─ */
+.marq{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
+.marq-inner{display:flex;animation:marquee 22s linear infinite;width:max-content}
+.marq-item{padding:18px 44px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted2);letter-spacing:2px;white-space:nowrap;text-transform:uppercase;transition:color .2s}
 .marq-item:hover{color:var(--white)}
 
-/* ── CTA ── */
-#cta{padding:160px 48px;text-align:center;position:relative;overflow:hidden}
-#cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(0,255,136,.04) 0%,transparent 70%)}
-.cta-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:60px 60px}
-#cta h2{font-size:clamp(52px,8vw,110px);letter-spacing:-4px;line-height:.9;margin-bottom:24px;position:relative}
+/* ─ PLATFORM ─ */
+#platform{padding:120px 56px}
+.plat-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.pcard{background:var(--card);border:1px solid var(--border);padding:40px;position:relative;overflow:hidden;transition:border-color .3s}
+.pcard::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);transform:scaleX(0);transition:transform .5s}
+.pcard:hover{border-color:rgba(0,232,122,.15)}
+.pcard:hover::after{transform:scaleX(1)}
+.pcard-icon{width:44px;height:44px;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:28px;transition:border-color .3s}
+.pcard:hover .pcard-icon{border-color:rgba(0,232,122,.3)}
+.pcard h3{font-size:19px;font-weight:600;margin-bottom:10px;letter-spacing:-.3px}
+.pcard p{font-size:14px;color:var(--muted);line-height:1.75}
+.pcard-link{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:13px;color:var(--green);text-decoration:none;font-weight:500;transition:gap .2s}
+.pcard-link:hover{gap:14px}
+
+/* ─ STATS ─ */
+#stats{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+.si{padding:56px;border-right:1px solid var(--border);position:relative;overflow:hidden}
+.si:last-child{border-right:none}
+.si::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 0% 100%,rgba(0,232,122,.04) 0%,transparent 60%);opacity:0;transition:opacity .4s}
+.si:hover::before{opacity:1}
+.si-n{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;line-height:1;margin-bottom:8px}
+.si-n span{color:var(--green)}
+.si-l{font-size:13px;color:var(--muted)}
+
+/* ─ PROVIDERS ─ */
+#prov{padding:100px 56px}
+.pv-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px}
+.pvgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.pv{background:var(--card);border:1px solid var(--border);height:72px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);transition:all .25s;letter-spacing:.5px}
+.pv:hover{color:var(--white);border-color:rgba(0,232,122,.2);background:#0E1018}
+
+/* ─ AWARDS ─ */
+#award{display:grid;grid-template-columns:1fr 1fr;min-height:70vh;border-top:1px solid var(--border)}
+.aw-left{padding:100px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)}
+.aw-right{padding:100px 56px;background:var(--bg2);display:flex;flex-direction:column;justify-content:center;gap:20px}
+.aw-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.aw-tag::before{content:'';width:16px;height:1px;background:var(--green)}
+.aw-title{font-size:clamp(44px,5.5vw,80px);font-weight:700;letter-spacing:-3px;line-height:.9;margin-bottom:20px}
+.aw-title em{font-style:normal;color:var(--green)}
+.aw-desc{font-size:15px;color:var(--muted);line-height:1.8;max-width:360px}
+.aw-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px 26px;display:flex;gap:18px;align-items:flex-start;transition:border-color .3s}
+.aw-card:hover{border-color:rgba(0,232,122,.2)}
+.aw-icon{font-size:26px;flex-shrink:0}
+.aw-card h4{font-size:16px;font-weight:600;margin-bottom:6px}
+.aw-card p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ─ CTA ─ */
+#cta{padding:160px 56px;text-align:center;position:relative;overflow:hidden}
+#cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(0,232,122,.04) 0%,transparent 70%)}
+#cta::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,122,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.015) 1px,transparent 1px);background-size:64px 64px}
+#cta h2{font-size:clamp(48px,7vw,100px);letter-spacing:-4px;line-height:.9;margin-bottom:22px;position:relative;z-index:1}
 #cta h2 em{font-style:normal;color:var(--green)}
-#cta p{font-size:17px;color:var(--muted2);margin-bottom:48px;position:relative}
-.cta-btns{display:flex;gap:16px;justify-content:center;position:relative}
-.cta-email{margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;position:relative}
-.cta-email a{color:var(--green);text-decoration:none}
+#cta .sint{margin:0 auto 48px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:14px;justify-content:center;position:relative;z-index:1}
+.cta-note{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:1px;position:relative;z-index:1}
+.cta-note a{color:var(--green);text-decoration:none}
 
-/* ── FOOTER ── */
-footer{border-top:1px solid var(--border);padding:48px}
-.foot-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.foot-logo{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;margin-bottom:12px;display:block;text-decoration:none;color:var(--white)}
-.foot-logo em{color:var(--green);font-style:normal}
-.foot-desc{font-size:13px;color:var(--muted2);line-height:1.7;max-width:220px}
-.foot-h{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-bottom:20px}
-.foot-link{display:block;font-size:13px;color:var(--muted2);text-decoration:none;margin-bottom:10px;transition:color .2s}
-.foot-link:hover{color:var(--white)}
-.foot-bottom{border-top:1px solid var(--border);padding-top:32px;display:flex;justify-content:space-between;align-items:center}
-.foot-copy{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px}
+/* ─ FOOTER ─ */
+footer{border-top:1px solid var(--border);padding:52px 56px}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:52px;margin-bottom:52px}
+.flogo{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;text-decoration:none;color:var(--white);margin-bottom:12px;display:block}
+.flogo span{color:var(--green)}
+.fdesc{font-size:13px;color:var(--muted);line-height:1.7;max-width:220px}
+.fcol h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:18px}
+.fcol a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.fcol a:hover{color:var(--white)}
+.fbot{border-top:1px solid var(--border);padding-top:32px;display:flex;justify-content:space-between;align-items:center}
+.fbot p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:.5px}
+.faward{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);letter-spacing:.5px}
+.faward::before{content:'★';font-size:13px}
 
-/* ── REVEAL ── */
-.rv{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+/* ─ REVEAL ─ */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
 .rv.on{opacity:1;transform:none}
-.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
-/* ── KEYFRAMES ── */
+/* ─ KEYFRAMES ─ */
 @keyframes fu{to{opacity:1;transform:none}}
-@keyframes glitch1{0%,94%,100%{transform:none;opacity:0}95%{transform:translate(-3px,1px);opacity:.8}97%{transform:translate(3px,-1px);opacity:.8}99%{transform:none;opacity:0}}
-@keyframes glitch2{0%,90%,100%{transform:none;opacity:0}91%{transform:translate(3px,2px);opacity:.8}93%{transform:translate(-3px,0);opacity:.8}95%{transform:none;opacity:0}}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes scan{from{top:0}to{top:100%}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,.4)}50%{box-shadow:0 0 0 8px rgba(0,255,136,0)}}
-@keyframes floatDash{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(calc(-50% - 12px)) translateX(0)}}
-.hero-dash{animation:fu .9s 1s forwards,floatDash 6s 2s ease-in-out infinite!important}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,232,122,.5)}50%{box-shadow:0 0 0 7px rgba(0,232,122,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hero-right{animation:fu .9s .6s forwards,float 7s 1.6s ease-in-out infinite!important}
 
 @media(max-width:960px){
-  nav{padding:18px 24px}.nav-r .nav-r a:not(.nav-demo){display:none}
-  #hero{padding:0 24px 60px}.hero-dash{display:none}
-  .sec,#prov,#clients{padding:80px 24px}
-  h2{letter-spacing:-1.5px}
-  #how{grid-template-columns:1fr;padding:80px 24px;gap:48px}
-  #platform{grid-template-columns:1fr}.plat-right{display:none}
-  .plat-left{padding:80px 24px}
-  .stats-row{grid-template-columns:1fr 1fr}.sitem:nth-child(2){border-right:none}.sitem{padding:40px 24px}
-  .clients-grid{grid-template-columns:1fr 1fr}
-  footer{padding:40px 24px}.foot-grid{grid-template-columns:1fr 1fr}
+  nav{padding:18px 24px}.nav-links a:not(.nav-cta){display:none}
+  #hero{grid-template-columns:1fr;padding:0 24px 80px;align-items:flex-end}.hero-right{display:none}
+  .sec,#platform,#prov{padding:80px 24px}
+  .wh{flex-direction:column;gap:16px;align-items:flex-start}
+  .wi:nth-child(n){grid-column:span 12}
+  .pgrid{grid-template-columns:1fr}
+  .sgrid{grid-template-columns:1fr 1fr}.si{padding:40px 24px}.si:nth-child(2){border-right:none}
+  .pvgrid{grid-template-columns:repeat(4,1fr)}
+  #award{grid-template-columns:1fr}.aw-left,.aw-right{padding:70px 24px}
   #cta{padding:100px 24px}
+  footer{padding:40px 24px}.fgrid{grid-template-columns:1fr 1fr}
+  .fbot{flex-direction:column;gap:12px;text-align:center}
 }
 </style>
 </head>
 <body>
 
-<div id="c"></div>
-<div id="ct"></div>
+<div id="cursor"></div>
+<div id="cursor-t"></div>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">NGX<em>.</em></a>
-  <div class="nav-r">
-    <a href="#how">Integração</a>
+  <a href="#" class="nav-logo">NGX<span>.</span></a>
+  <div class="nav-links">
+    <a href="#work">Clientes</a>
     <a href="#platform">Plataforma</a>
-    <a href="#clients">Clientes</a>
-    <a href="#cta" class="nav-demo">Agendar Demo</a>
+    <a href="#prov">Provedores</a>
+    <a href="#award">Diferenciais</a>
+    <a href="#cta" class="nav-cta">Agendar Demo</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <canvas class="grid-canvas" id="gc"></canvas>
-  <div class="hero-vignette"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-grad"></div>
 
   <div class="hero-left">
-    <p class="hero-eyebrow">iGaming Whitelabel Infrastructure</p>
+    <div class="hero-badge">
+      <span></span>
+      iGaming Whitelabel · Operacional em dias
+    </div>
     <h1 class="hero-h1">
-      INFRA<br/>
-      <span class="line2">STRUCTURE</span><br/>
-      <span class="glitch" data-text="IGAMING">IGAMING</span>
+      Eleve<br/>seu <em>jogo</em><br/>com a NGX
     </h1>
-    <p class="hero-sub">Sistema whitelabel completo para operadores de apostas. Sportsbook, casino, pagamentos e compliance — prontos para operar.</p>
-    <div class="hero-actions">
-      <a href="#cta" class="btn-g">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M6 5.5L10.5 8 6 10.5V5.5Z" fill="currentColor"/></svg>
-        Agendar Demo
-      </a>
-      <a href="#platform" class="btn-o">VER PLATAFORMA</a>
+    <p class="hero-sub">
+      Plataforma all-in-one modular para operadores de apostas. Sportsbook, casino, pagamentos e compliance — tudo integrado, pronto para operar.
+    </p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-p">Agendar Demo</a>
+      <a href="#platform" class="btn-s">Ver Plataforma →</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hm-n">40<span style="color:var(--green)">+</span></span>
+        <span class="hm-l">Provedores</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hm-n">24<span style="color:var(--green)">/7</span></span>
+        <span class="hm-l">Suporte</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hm-n">GLI</span>
+        <span class="hm-l">Certificado</span>
+      </div>
     </div>
   </div>
 
-  <!-- Floating Dashboard -->
-  <div class="hero-dash">
-    <div class="dash-window">
-      <div class="dash-bar">
-        <div class="dot" style="background:#FF5F57"></div>
-        <div class="dot" style="background:#FEBC2E"></div>
-        <div class="dot" style="background:#28C840"></div>
-        <span class="dash-title">NGX OPERATOR DASHBOARD</span>
+  <!-- Floating Card -->
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="hc-bar">
+        <div class="hc-dot" style="background:#FF5F57"></div>
+        <div class="hc-dot" style="background:#FEBC2E"></div>
+        <div class="hc-dot" style="background:#28C840"></div>
+        <span class="hc-title">NGX · OPERATOR DASHBOARD</span>
       </div>
-      <div class="dash-body">
-        <div class="dash-metric">
-          <span class="dm-label">GGR HOJE</span>
-          <span class="dm-val green" id="ggr">R$ 0</span>
+      <div class="hc-body">
+        <div class="hc-row">
+          <span class="hc-label">GGR HOJE</span>
+          <span class="hc-val g" id="v-ggr">R$ 142.389</span>
         </div>
-        <div class="dash-metric">
-          <span class="dm-label">APOSTAS ATIVAS</span>
-          <span class="dm-val blue" id="bets">0</span>
+        <div class="hc-row">
+          <span class="hc-label">APOSTAS ATIVAS</span>
+          <span class="hc-val w" id="v-bets">1.847</span>
         </div>
-        <div class="dash-metric">
-          <span class="dm-label">JOGADORES ONLINE</span>
-          <span class="dm-val white" id="online">0</span>
+        <div class="hc-row">
+          <span class="hc-label">JOGADORES ONLINE</span>
+          <span class="hc-val w" id="v-users">3.241</span>
         </div>
-        <div class="dash-metric">
-          <span class="dm-label">UPTIME</span>
-          <span class="dm-val green">99.98%</span>
+        <div class="hc-row">
+          <span class="hc-label">UPTIME</span>
+          <span class="hc-val g">99.98%</span>
         </div>
-        <div class="dash-chart" id="chart"></div>
-        <div class="dash-status">
-          <div class="pulse"></div>
-          SISTEMA OPERACIONAL · TEMPO REAL
+        <div class="hc-chart" id="hc-chart"></div>
+        <div class="hc-footer">
+          <div class="hc-pulse"></div>
+          DADOS EM TEMPO REAL
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
   </div>
 </section>
 
 <!-- TICKER -->
-<div class="ticker-wrap">
+<div class="ticker">
   <div class="ticker-inner" id="ticker"></div>
 </div>
 
-<!-- HOW IT WORKS -->
-<section id="how">
-  <div>
-    <p class="stag rv">Integração</p>
-    <h2 class="rv d1">De zero<br/>à operação<br/>em dias.</h2>
-    <p class="sint rv d2" style="margin-bottom:48px">Não semanas, não meses. A NGX entrega a stack completa pronta para rodar. Você foca no negócio.</p>
-    <div class="steps">
-      <div class="step rv">
-        <div class="step-n">01/</div>
-        <div class="step-content">
-          <h3>Contrato & Onboarding</h3>
-          <p>Definição dos módulos, customização de marca e configuração do ambiente dedicado.</p>
-          <span class="step-tag">~ 24h</span>
-        </div>
-      </div>
-      <div class="step rv d1">
-        <div class="step-n">02/</div>
-        <div class="step-content">
-          <h3>Integração API</h3>
-          <p>Endpoints documentados, SDKs e suporte técnico dedicado para conectar com sua stack atual.</p>
-          <span class="step-tag">~ 48h</span>
-        </div>
-      </div>
-      <div class="step rv d2">
-        <div class="step-n">03/</div>
-        <div class="step-content">
-          <h3>QA & Compliance</h3>
-          <p>Testes de carga, validação regulatória, configuração de geolocalização e jogo responsável.</p>
-          <span class="step-tag">~ 72h</span>
-        </div>
-      </div>
-      <div class="step rv d3">
-        <div class="step-n">04/</div>
-        <div class="step-content">
-          <h3>Go Live</h3>
-          <p>Deploy em produção com monitoramento 24/7 e suporte humano especializado.</p>
-          <span class="step-tag">✓ OPERACIONAL</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Terminal -->
-  <div class="rv d2">
-    <div class="terminal">
-      <div class="term-bar">
-        <div class="dot" style="background:#FF5F57"></div>
-        <div class="dot" style="background:#FEBC2E"></div>
-        <div class="dot" style="background:#28C840"></div>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);margin-left:8px">ngx — integration</span>
-      </div>
-      <div class="term-body" id="term-body"></div>
-    </div>
-  </div>
-</section>
-
-<!-- PLATFORM -->
-<section id="platform">
-  <div class="plat-left">
-    <p class="stag rv">Plataforma</p>
-    <h2 class="rv d1">Tudo que<br/>um operador<br/>precisa.</h2>
-    <p class="sint rv d2" style="margin-bottom:40px">Modular, escalável. Escolha os componentes que fazem sentido para o seu negócio.</p>
-    <div class="hero-actions rv d3">
-      <a href="#cta" class="btn-g">Ver Demo Completo</a>
-    </div>
-  </div>
-  <div class="plat-right">
-    <div class="scan-line"></div>
-    <div class="plat-grid">
-      <div class="plat-header">// MÓDULOS ATIVOS</div>
-      <div class="module-chip rv">
-        <div class="chip-icon" style="background:#00FF8812">🏟️</div>
-        <div><div class="chip-name">Sportsbook iFrame</div><div class="chip-sub">Apostas esportivas · Odds ao vivo</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-      <div class="module-chip rv d1">
-        <div class="chip-icon" style="background:#2563EB15">🎰</div>
-        <div><div class="chip-name">Casino Engine</div><div class="chip-sub">40+ provedores integrados</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-      <div class="module-chip rv d2">
-        <div class="chip-icon" style="background:#FCD34D15">⚡</div>
-        <div><div class="chip-name">Widgets Dinâmicos</div><div class="chip-sub">Live score · Rankings · Odds</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-      <div class="module-chip rv d3">
-        <div class="chip-icon" style="background:#FF336615">🔌</div>
-        <div><div class="chip-name">Payment Gateway</div><div class="chip-sub">PIX · Cripto · Cartão</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-      <div class="module-chip rv d4">
-        <div class="chip-icon" style="background:#00FF8812">📊</div>
-        <div><div class="chip-name">Analytics Dashboard</div><div class="chip-sub">Reports em tempo real</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-      <div class="module-chip rv d4">
-        <div class="chip-icon" style="background:#A78BFA15">🛡️</div>
-        <div><div class="chip-name">Compliance & KYC</div><div class="chip-sub">GLI certificado · Geolocalização</div></div>
-        <div class="chip-status">● ATIVO</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div id="stats">
-  <div class="stats-row">
-    <div class="sitem rv">
-      <div class="s-num"><span class="counter" data-target="40">0</span><span>+</span></div>
-      <div class="s-lab">Provedores integrados</div>
-    </div>
-    <div class="sitem rv d1">
-      <div class="s-num"><span class="counter" data-target="99">0</span><span style="color:var(--green)">.98%</span></div>
-      <div class="s-lab">Uptime garantido</div>
-    </div>
-    <div class="sitem rv d2">
-      <div class="s-num"><span style="color:var(--green)">24</span><span>/7</span></div>
-      <div class="s-lab">Suporte especializado</div>
-    </div>
-    <div class="sitem rv d3">
-      <div class="s-num"><span class="counter" data-target="5">0</span><span>+</span></div>
-      <div class="s-lab">Anos de operação</div>
-    </div>
-  </div>
-</div>
-
-<!-- PROVIDERS -->
-<section id="prov">
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0">
+<!-- WORK / CLIENTS -->
+<section id="work" class="sec" style="padding-bottom:0">
+  <div class="wh">
     <div>
-      <p class="stag rv">Ecossistema</p>
-      <h2 class="rv d1">40+ Provedores</h2>
+      <p class="stag rv">Clientes</p>
+      <h2 class="rv d1">Operadores<br/>que confiam<br/>na NGX.</h2>
     </div>
-    <p class="sint rv" style="max-width:280px;text-align:right;font-size:14px">Os maiores names globais do iGaming na sua plataforma, prontos para operar.</p>
+    <p class="sint rv d2" style="max-width:300px;text-align:right;font-size:15px">Parceiros que escolheram a plataforma mais completa do mercado brasileiro de iGaming.</p>
   </div>
-  <div class="prov-scroll rv d2">
-    <div class="prov-chip">Evolution</div><div class="prov-chip">Pragmatic Play</div>
-    <div class="prov-chip">PG Soft</div><div class="prov-chip">Playtech</div>
-    <div class="prov-chip">BGaming</div><div class="prov-chip">NetEnt</div>
-    <div class="prov-chip">Microgaming</div><div class="prov-chip">Betsoft</div>
-    <div class="prov-chip">Hacksaw</div><div class="prov-chip">Push Gaming</div>
-    <div class="prov-chip">Nolimit City</div><div class="prov-chip">Play'n GO</div>
-    <div class="prov-chip">Yggdrasil</div><div class="prov-chip">Red Tiger</div>
-    <div class="prov-chip">Blueprint</div><div class="prov-chip">Relax Gaming</div>
-    <div class="prov-chip">ELK Studios</div><div class="prov-chip">Thunderkick</div>
-    <div class="prov-chip">Quickspin</div><div class="prov-chip">Booming Games</div>
-    <div class="prov-chip">Kalamba</div><div class="prov-chip">Stakelogic</div>
-    <div class="prov-chip">GameArt</div><div class="prov-chip">Tom Horn</div>
-    <div class="prov-chip">Spinomenal</div><div class="prov-chip">+ 15 mais</div>
+  <div class="wgrid">
+    <div class="wi">
+      <div class="wi-bg g1"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">Sportsbook · Casino</div>
+        <div class="wi-name">Lottu</div>
+        <div class="wi-sub">Plataforma completa com integração de provedores premium</div>
+      </div>
+    </div>
+    <div class="wi">
+      <div class="wi-bg g2"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">Full Platform</div>
+        <div class="wi-name">Obabet</div>
+        <div class="wi-sub">Stack completo com analytics em tempo real</div>
+      </div>
+    </div>
+    <div class="wi">
+      <div class="wi-bg g3"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">Sportsbook · Widgets</div>
+        <div class="wi-name">Marjosports</div>
+        <div class="wi-sub">Widgets dinâmicos e odds ao vivo integrados</div>
+      </div>
+    </div>
+    <div class="wi">
+      <div class="wi-bg g4"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">API · Live</div>
+        <div class="wi-name">Brbet</div>
+        <div class="wi-sub">Integração via API com mercados nacionais e internacionais</div>
+      </div>
+    </div>
+    <div class="wi">
+      <div class="wi-bg g5"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">Casino · Compliance</div>
+        <div class="wi-name">Apostou</div>
+        <div class="wi-sub">Jogo responsável e compliance regulatório completo</div>
+      </div>
+    </div>
+    <div class="wi">
+      <div class="wi-bg g6"></div>
+      <div class="wi-ov"></div>
+      <div class="wi-info">
+        <div class="wi-tag">Full Platform</div>
+        <div class="wi-name">Starsports</div>
+        <div class="wi-sub">High performance com relatórios e analytics dedicados</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<div class="marq-wrap">
+<div class="marq">
   <div class="marq-inner">
     <div class="marq-item">Lottu</div><div class="marq-item">Obabet</div>
     <div class="marq-item">Marjosports</div><div class="marq-item">Brbet</div>
@@ -466,218 +414,267 @@ footer{border-top:1px solid var(--border);padding:48px}
   </div>
 </div>
 
-<!-- CLIENTS -->
-<section id="clients">
-  <p class="stag rv">Clientes</p>
-  <h2 class="rv d1">Operadores<br/>que escolheram<br/>a NGX.</h2>
-  <div class="clients-grid" style="margin-top:56px">
-    <div class="client-card rv">
-      <div class="client-tag">// SPORTSBOOK</div>
-      <div class="client-name">Lottu</div>
-      <div class="client-desc">Plataforma completa com sportsbook iFrame e integração de casino premium.</div>
+<!-- PLATFORM -->
+<section id="platform" class="sec">
+  <div class="plat-top">
+    <div>
+      <p class="stag rv">Plataforma</p>
+      <h2 class="rv d1">Tudo que um<br/>operador precisa.</h2>
     </div>
-    <div class="client-card rv d1">
-      <div class="client-tag">// FULL PLATFORM</div>
-      <div class="client-name">Obabet</div>
-      <div class="client-desc">Stack completo: apostas, casino, pagamentos e analytics em tempo real.</div>
+    <p class="sint rv d2" style="max-width:300px;text-align:right;font-size:15px">Modular e escalável. Você escolhe os componentes, nós garantimos a operação.</p>
+  </div>
+  <div class="pgrid">
+    <div class="pcard rv">
+      <div class="pcard-icon">🏟️</div>
+      <h3>Sportsbook iFrame</h3>
+      <p>Integração de apostas esportivas rápida e flexível. Odds ao vivo, mercados nacionais e internacionais.</p>
+      <a href="#cta" class="pcard-link">Ver demo <span>→</span></a>
     </div>
-    <div class="client-card rv d2">
-      <div class="client-tag">// SPORTSBOOK + WIDGETS</div>
-      <div class="client-name">Marjosports</div>
-      <div class="client-desc">Widgets dinâmicos e sportsbook com odds ao vivo integrados ao ecossistema.</div>
+    <div class="pcard rv d1">
+      <div class="pcard-icon">🎰</div>
+      <h3>Casino Engine</h3>
+      <p>Evolution, Pragmatic Play, PG Soft, Playtech, BGaming e mais 35 provedores premium disponíveis.</p>
+      <a href="#prov" class="pcard-link">Ver provedores <span>→</span></a>
     </div>
-    <div class="client-card rv d3">
-      <div class="client-tag">// API + LIVE</div>
-      <div class="client-name">Brbet</div>
-      <div class="client-desc">Integração via API com cobertura de mercados nacionais e internacionais.</div>
+    <div class="pcard rv d2">
+      <div class="pcard-icon">⚡</div>
+      <h3>Widgets Dinâmicos</h3>
+      <p>Componentes prontos para engajamento. Live score, odds em tempo real, rankings e resultados.</p>
+      <a href="#cta" class="pcard-link">Explorar <span>→</span></a>
     </div>
-    <div class="client-card rv">
-      <div class="client-tag">// COMPLIANCE</div>
-      <div class="client-name">Apostou</div>
-      <div class="client-desc">Plataforma com jogo responsável e compliance regulatório completo.</div>
+    <div class="pcard rv d1">
+      <div class="pcard-icon">💳</div>
+      <h3>Pagamentos</h3>
+      <p>PIX, cartão, transferência e cripto integrados. Gateway otimizado para o mercado brasileiro.</p>
+      <a href="#cta" class="pcard-link">Saiba mais <span>→</span></a>
     </div>
-    <div class="client-card rv d1">
-      <div class="client-tag">// CASINO</div>
-      <div class="client-name">Clube do Bet</div>
-      <div class="client-desc">Casino completo com 40+ provedores e dashboard de relatórios avançado.</div>
+    <div class="pcard rv d2">
+      <div class="pcard-icon">📊</div>
+      <h3>Analytics & Reports</h3>
+      <p>Dashboard completo com GGR, comportamento do jogador, relatórios em tempo real e KPIs operacionais.</p>
+      <a href="#cta" class="pcard-link">Ver dashboard <span>→</span></a>
     </div>
-    <div class="client-card rv d2">
-      <div class="client-tag">// FULL PLATFORM</div>
-      <div class="client-name">Playbonds</div>
-      <div class="client-desc">Operação completa com módulos customizados para o mercado brasileiro.</div>
+    <div class="pcard rv d3">
+      <div class="pcard-icon">🛡️</div>
+      <h3>Compliance & KYC</h3>
+      <p>Ferramentas de jogo responsável, geolocalização, KYC e conformidade com regulamentação GLI.</p>
+      <a href="#cta" class="pcard-link">Compliance <span>→</span></a>
     </div>
-    <div class="client-card rv d3">
-      <div class="client-tag">// SPORTSBOOK</div>
-      <div class="client-name">Starsports</div>
-      <div class="client-desc">Sportsbook de alta performance com relatórios e analytics dedicados.</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="sgrid">
+    <div class="si rv">
+      <div class="si-n"><span class="cnt" data-t="40">0</span><span style="color:var(--green)">+</span></div>
+      <div class="si-l">Provedores integrados</div>
+    </div>
+    <div class="si rv d1">
+      <div class="si-n"><span class="cnt" data-t="99">0</span><span style="color:var(--green)">.98%</span></div>
+      <div class="si-l">Uptime garantido</div>
+    </div>
+    <div class="si rv d2">
+      <div class="si-n"><span style="color:var(--green)">24</span>/7</div>
+      <div class="si-l">Suporte especializado</div>
+    </div>
+    <div class="si rv d3">
+      <div class="si-n">GLI</div>
+      <div class="si-l">Certificação nacional e internacional</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROVIDERS -->
+<section id="prov">
+  <div class="pv-top">
+    <div>
+      <p class="stag rv">Ecossistema</p>
+      <h2 class="rv d1">40+ Provedores<br/>integrados.</h2>
+    </div>
+    <p class="sint rv d2" style="max-width:280px;text-align:right;font-size:15px">Os maiores names do iGaming global na sua plataforma, prontos para operar.</p>
+  </div>
+  <div class="pvgrid rv d2">
+    <div class="pv">Evolution</div><div class="pv">Pragmatic</div>
+    <div class="pv">PG Soft</div><div class="pv">Playtech</div>
+    <div class="pv">BGaming</div><div class="pv">NetEnt</div>
+    <div class="pv">Microgaming</div><div class="pv">Betsoft</div>
+    <div class="pv">Hacksaw</div><div class="pv">Push Gaming</div>
+    <div class="pv">Nolimit City</div><div class="pv">Play'n GO</div>
+    <div class="pv">Yggdrasil</div><div class="pv">Red Tiger</div>
+    <div class="pv">Blueprint</div><div class="pv">+ 25 mais</div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="award">
+  <div class="aw-left">
+    <div class="aw-tag rv">SiGMA Awards 2025</div>
+    <h2 class="aw-title rv d1">Rising<br/><em>Star</em><br/>Award.</h2>
+    <p class="aw-desc rv d2">Reconhecidos como a plataforma em maior crescimento da América Latina. A única plataforma brasileira membro da CIBELAE.</p>
+  </div>
+  <div class="aw-right">
+    <div class="aw-card rv">
+      <div class="aw-icon">🇧🇷</div>
+      <div>
+        <h4>100% Brasileiro</h4>
+        <p>Sede em Campina Grande, PB. Suporte em português e conhecimento profundo do mercado local.</p>
+      </div>
+    </div>
+    <div class="aw-card rv d1">
+      <div class="aw-icon">⚽</div>
+      <div>
+        <h4>3 Federações de Futebol</h4>
+        <p>Parceira oficial de três federações brasileiras, com acesso a dados e mercados exclusivos.</p>
+      </div>
+    </div>
+    <div class="aw-card rv d2">
+      <div class="aw-icon">🏆</div>
+      <div>
+        <h4>Certificação GLI</h4>
+        <p>Conformidade total com a regulamentação vigente nacional e internacional.</p>
+      </div>
+    </div>
+    <div class="aw-card rv d3">
+      <div class="aw-icon">🌎</div>
+      <div>
+        <h4>CIBELAE</h4>
+        <p>Único membro brasileiro da associação ibero-americana de loterias e apostas esportivas.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section id="cta">
-  <div class="cta-grid-bg"></div>
-  <p class="cta-email rv" style="margin-bottom:20px">// PRONTO PARA OPERAR?</p>
-  <h2 class="rv d1">Leve seu bet<br/>para o próximo<br/><em>nível.</em></h2>
-  <p class="rv d2">Agende uma demonstração e veja a plataforma funcionando ao vivo.</p>
+  <p class="stag rv" style="justify-content:center;margin-bottom:20px">Próximo passo</p>
+  <h2 class="rv d1">Pronto para<br/>elevar seu<br/><em>jogo?</em></h2>
+  <p class="sint rv d2">Agende uma demonstração e veja a plataforma funcionando ao vivo com a sua marca.</p>
   <div class="cta-btns rv d3">
-    <a href="mailto:commercial@ngxbrasil.com" class="btn-g">Agendar Demo Agora</a>
-    <a href="https://www.ngxbrasil.com" target="_blank" class="btn-o">SITE OFICIAL</a>
+    <a href="mailto:commercial@ngxbrasil.com" class="btn-p">Agendar Demo</a>
+    <a href="https://www.ngxbrasil.com" target="_blank" class="btn-s">Site Oficial →</a>
   </div>
-  <p class="cta-email rv d4" style="margin-top:28px">Ou escreva para <a href="mailto:commercial@ngxbrasil.com">commercial@ngxbrasil.com</a></p>
+  <p class="cta-note rv d4">Ou escreva para <a href="mailto:commercial@ngxbrasil.com">commercial@ngxbrasil.com</a></p>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="foot-grid">
+  <div class="fgrid">
     <div>
-      <a href="#" class="foot-logo">NGX<em>.</em></a>
-      <p class="foot-desc">Infraestrutura whitelabel de iGaming para operadores que querem escalar com segurança e velocidade.</p>
+      <a href="#" class="flogo">NGX<span>.</span></a>
+      <p class="fdesc">Infraestrutura whitelabel de iGaming para operadores que querem crescer com velocidade e segurança.</p>
     </div>
-    <div>
-      <div class="foot-h">Plataforma</div>
-      <a href="#" class="foot-link">Sportsbook</a>
-      <a href="#" class="foot-link">Casino Engine</a>
-      <a href="#" class="foot-link">Widgets</a>
-      <a href="#" class="foot-link">Pagamentos</a>
-      <a href="#" class="foot-link">Compliance</a>
+    <div class="fcol">
+      <h5>Plataforma</h5>
+      <a href="#">Sportsbook</a>
+      <a href="#">Casino Engine</a>
+      <a href="#">Widgets</a>
+      <a href="#">Pagamentos</a>
+      <a href="#">Compliance</a>
     </div>
-    <div>
-      <div class="foot-h">Empresa</div>
-      <a href="#" class="foot-link">Sobre nós</a>
-      <a href="#" class="foot-link">Eventos</a>
-      <a href="#" class="foot-link">Contato</a>
+    <div class="fcol">
+      <h5>Empresa</h5>
+      <a href="#">Sobre nós</a>
+      <a href="#">Eventos</a>
+      <a href="#">Contato</a>
     </div>
-    <div>
-      <div class="foot-h">Social</div>
-      <a href="https://instagram.com/ngx.bet" target="_blank" class="foot-link">Instagram</a>
-      <a href="#" target="_blank" class="foot-link">LinkedIn</a>
-      <a href="#" target="_blank" class="foot-link">YouTube</a>
+    <div class="fcol">
+      <h5>Social</h5>
+      <a href="https://instagram.com/ngx.bet" target="_blank">Instagram</a>
+      <a href="#" target="_blank">LinkedIn</a>
+      <a href="#" target="_blank">YouTube</a>
     </div>
   </div>
-  <div class="foot-bottom">
-    <span class="foot-copy">© 2026 NGX BRASIL — CAMPINA GRANDE, PB</span>
-    <span class="foot-copy">CERTIFICAÇÃO GLI · CIBELAE · RISING STAR SIGMA 2025</span>
+  <div class="fbot">
+    <p>© 2026 NGX Brasil — Campina Grande, PB</p>
+    <div class="faward">Rising Star · SiGMA Awards 2025</div>
   </div>
 </footer>
 
 <script>
 /* CURSOR */
-const cur=document.getElementById('c'),ctr=document.getElementById('ct');
+const cur=document.getElementById('cursor'),ctr=document.getElementById('cursor-t');
 let mx=0,my=0,tx=0,ty=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function loop(){tx+=(mx-tx)*.1;ty+=(my-ty)*.1;ctr.style.left=tx+'px';ctr.style.top=ty+'px';requestAnimationFrame(loop)})();
+(function loop(){tx+=(mx-tx)*.11;ty+=(my-ty)*.11;ctr.style.left=tx+'px';ctr.style.top=ty+'px';requestAnimationFrame(loop)})();
 document.querySelectorAll('a,button').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ctr.style.width='52px';ctr.style.height='52px'});
-  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ctr.style.width='32px';ctr.style.height='32px'});
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';ctr.style.width='56px';ctr.style.height='56px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ctr.style.width='38px';ctr.style.height='38px'});
 });
 
-/* GRID CANVAS */
-const gc=document.getElementById('gc');
-const gx=gc.getContext('2d');
-function resizeGc(){gc.width=window.innerWidth;gc.height=window.innerHeight}
-resizeGc();window.addEventListener('resize',resizeGc);
-function drawGrid(){
-  gx.clearRect(0,0,gc.width,gc.height);
-  const sz=60;
-  gx.strokeStyle='rgba(0,255,136,0.04)';gx.lineWidth=.5;
-  for(let x=0;x<gc.width;x+=sz){gx.beginPath();gx.moveTo(x,0);gx.lineTo(x,gc.height);gx.stroke()}
-  for(let y=0;y<gc.height;y+=sz){gx.beginPath();gx.moveTo(0,y);gx.lineTo(gc.width,y);gx.stroke()}
-  // Dots at intersections
-  for(let x=0;x<gc.width;x+=sz){for(let y=0;y<gc.height;y+=sz){
-    gx.beginPath();gx.arc(x,y,1,0,Math.PI*2);
-    gx.fillStyle='rgba(0,255,136,0.12)';gx.fill();
-  }}
+/* PARTICLE CANVAS */
+const canvas=document.getElementById('hero-canvas');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+const pts=[];
+for(let i=0;i<70;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.2+.4,a:Math.random()*.4+.1});
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width||p.y<0||p.y>canvas.height){p.x=Math.random()*canvas.width;p.y=Math.random()*canvas.height}
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,232,122,${p.a})`;ctx.fill();
+  });
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(0,232,122,${.055*(1-d/130)})`;ctx.lineWidth=.6;ctx.stroke()}
+  }
+  requestAnimationFrame(draw);
 }
-drawGrid();window.addEventListener('resize',drawGrid);
+draw();
 
-/* DASHBOARD LIVE DATA */
-function fmt(n){return'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2})}
-let ggr=142300,bets=847,online=1243;
+/* DASHBOARD LIVE */
+let ggr=142389,bets=1847,users=3241;
+function fmtGGR(n){return'R$ '+Math.round(n).toLocaleString('pt-BR')}
+function fmtN(n){return Math.round(Math.max(0,n)).toLocaleString('pt-BR')}
 function updateDash(){
-  ggr+=Math.random()*200-30;bets+=Math.floor(Math.random()*5-1);online+=Math.floor(Math.random()*8-3);
-  document.getElementById('ggr').textContent=fmt(Math.max(0,ggr));
-  document.getElementById('bets').textContent=Math.max(0,bets).toLocaleString('pt-BR');
-  document.getElementById('online').textContent=Math.max(0,online).toLocaleString('pt-BR');
+  ggr+=Math.random()*180-20;bets+=Math.floor(Math.random()*6-2);users+=Math.floor(Math.random()*10-4);
+  const eg=document.getElementById('v-ggr');
+  const eb=document.getElementById('v-bets');
+  const eu=document.getElementById('v-users');
+  if(eg)eg.textContent=fmtGGR(ggr);
+  if(eb)eb.textContent=fmtN(bets);
+  if(eu)eu.textContent=fmtN(users);
 }
-setInterval(updateDash,2000);updateDash();
+setInterval(updateDash,2200);
 
 /* CHART BARS */
-const chart=document.getElementById('chart');
-const bars=[];const heights=[30,45,60,40,75,55,80,65,90,70,85,60];
-heights.forEach(h=>{
-  const b=document.createElement('div');
-  b.className='bar-col';b.style.height=h+'%';chart.appendChild(b);bars.push(b);
-});
-setInterval(()=>{
-  bars.forEach(b=>b.style.height=(20+Math.random()*75)+'%');
-},2500);
+const chart=document.getElementById('hc-chart');
+if(chart){
+  const vals=[28,42,58,38,72,50,80,64,88,70,82,56];
+  const bars=vals.map(h=>{const b=document.createElement('div');b.className='hc-bar-col';b.style.height=h+'%';chart.appendChild(b);return b});
+  setInterval(()=>bars.forEach(b=>b.style.height=(18+Math.random()*78)+'%'),2800);
+}
 
 /* TICKER */
-const ticks=[
-  {l:'FLAMENGO × PALMEIRAS',v:'2.30',d:'up'},{l:'REAL MADRID',v:'1.85',d:'dn'},
-  {l:'PREMIER LEAGUE',v:'3.10',d:'up'},{l:'NBA · LAKERS',v:'1.95',d:'up'},
-  {l:'FORMULA 1',v:'4.20',d:'dn'},{l:'UFC 310',v:'2.75',d:'up'},
-  {l:'BRASILEIRÃO',v:'1.60',d:'dn'},{l:'CHAMPIONS LEAGUE',v:'2.50',d:'up'},
+const tdata=[
+  ['FLAMENGO × PALMEIRAS','2.30',1],['REAL MADRID × BARCELONA','1.85',0],
+  ['PREMIER LEAGUE','3.10',1],['NBA · LAKERS × CELTICS','1.95',1],
+  ['FÓRMULA 1 · GP DO BRASIL','4.20',0],['UFC · MAIN EVENT','2.75',1],
+  ['BRASILEIRÃO · RODADA 28','1.60',0],['CHAMPIONS LEAGUE','2.50',1],
+  ['COPA DO BRASIL','3.40',1],['NFL · SUPER BOWL ODDS','5.50',0],
 ];
 const tk=document.getElementById('ticker');
-[...ticks,...ticks].forEach(t=>{
-  const d=document.createElement('div');d.className='tick';
-  d.innerHTML=`<span class="tick-label">${t.l}</span><span class="tick-val ${t.d==='up'?'tick-up':'tick-dn'}">${t.d==='up'?'▲':'▼'} ${t.v}</span>`;
+[...tdata,...tdata].forEach(([l,v,up])=>{
+  const d=document.createElement('div');d.className='tick-item';
+  d.innerHTML=`<span>${l}</span><span class="${up?'tick-val':'tick-dn'}">${up?'▲':'▼'} ${v}</span>`;
   tk.appendChild(d);
 });
 
-/* TERMINAL TYPEWRITER */
-const lines=[
-  {t:'prompt',text:'$ ngx init my-operator'},
-  {t:'green',text:'✓ Workspace criado com sucesso'},
-  {t:'comment',text:'# Configurando módulos...'},
-  {t:'prompt',text:'$ ngx add sportsbook --provider=all'},
-  {t:'green',text:'✓ 40+ provedores integrados'},
-  {t:'prompt',text:'$ ngx add casino --evolution --pragmatic'},
-  {t:'green',text:'✓ Casino engine configurado'},
-  {t:'prompt',text:'$ ngx compliance --br --gli'},
-  {t:'green',text:'✓ Certificação GLI aplicada'},
-  {t:'prompt',text:'$ ngx deploy --env=production'},
-  {t:'yellow',text:'⟳ Build em progresso...'},
-  {t:'green',text:'✓ Deploy concluído. Operacional em 4h32m'},
-  {t:'prompt',text:'$ _'},
-];
-const tb=document.getElementById('term-body');
-let li=0;
-function addLine(){
-  if(li>=lines.length)return;
-  const ln=lines[li++];
-  const d=document.createElement('div');d.className='t-line';
-  const colorMap={prompt:'t-cmd',green:'t-green',comment:'t-comment',yellow:'t-yellow'};
-  if(ln.t==='prompt'){
-    const sp=document.createElement('span');sp.className='t-prompt';sp.textContent='→ ';d.appendChild(sp);
-  }
-  const s=document.createElement('span');s.className=colorMap[ln.t]||'t-cmd';
-  tb.appendChild(d);d.appendChild(s);
-  let ci=0;
-  const interval=setInterval(()=>{
-    s.textContent=ln.text.slice(0,++ci);
-    if(ci>=ln.text.length){clearInterval(interval);setTimeout(addLine,300)}
-  },ln.t==='prompt'?40:20);
-}
-setTimeout(addLine,1000);
-
 /* SCROLL REVEAL */
-const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')})},{threshold:.1});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.1});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 
 /* COUNTERS */
 const co=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(!e.isIntersecting)return;
-    const el=e.target,tgt=+el.dataset.target;
-    let v=0;const step=tgt/50;
-    const t=setInterval(()=>{v+=step;if(v>=tgt){el.textContent=tgt;clearInterval(t)}else el.textContent=Math.floor(v)},25);
+  es.forEach(e=>{if(!e.isIntersecting)return;
+    const el=e.target,t=+el.dataset.t;let v=0;
+    const timer=setInterval(()=>{v+=t/50;if(v>=t){el.textContent=t;clearInterval(timer)}else el.textContent=Math.floor(v)},22);
     co.unobserve(el);
   });
 },{threshold:.5});
-document.querySelectorAll('.counter').forEach(el=>co.observe(el));
+document.querySelectorAll('.cnt').forEach(el=>co.observe(el));
 </script>
 </body>
 </html>
