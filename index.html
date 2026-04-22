@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NGX — Eleve Seu Jogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:      #05060A;
+      --green:   #00E87A;
+      --green2:  #00FF8A;
+      --white:   #F0F0F0;
+      --muted:   #5A5A6A;
+      --card:    #0C0E14;
+      --border:  #151820;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSOR ─── */
+    #cursor {
+      width: 10px; height: 10px;
+      background: var(--green);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: difference;
+    }
+    #cursor-trail {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,232,122,0.3);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all .12s ease;
+    }
+    a, button { cursor: none; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 48px;
+      mix-blend-mode: normal;
+    }
+    nav::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(5,6,10,0.9) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      text-decoration: none;
+      position: relative;
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none; position: relative;
+    }
+    .nav-links a {
+      text-decoration: none; color: var(--muted); font-size: 14px;
+      font-weight: 500; letter-spacing: 0.5px;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      position: relative;
+      padding: 10px 24px;
+      border: 1px solid rgba(0,232,122,0.4);
+      border-radius: 4px;
+      color: var(--green) !important;
+      font-size: 13px !important;
+      letter-spacing: 1px !important;
+      text-transform: uppercase;
+      transition: all .2s !important;
+    }
+    .nav-cta:hover { background: var(--green) !important; color: var(--bg) !important; }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      padding: 0 48px 80px;
+      overflow: hidden;
+    }
+    #hero-canvas {
+      position: absolute; inset: 0;
+      z-index: 0;
+    }
+    .hero-noise {
+      position: absolute; inset: 0; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .hero-gradient {
+      position: absolute; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(0,232,122,0.06) 0%, transparent 70%),
+                  linear-gradient(180deg, transparent 40%, rgba(5,6,10,0.95) 100%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      position: relative; z-index: 2;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 2px;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .8s .2s forwards;
+    }
+    .hero-h1 {
+      position: relative; z-index: 2;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(52px, 8vw, 120px);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -3px;
+      margin-bottom: 32px;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp .9s .4s forwards;
+    }
+    .hero-h1 em { font-style: normal; color: var(--green); }
+    .hero-sub {
+      position: relative; z-index: 2;
+      font-size: 16px; color: var(--muted);
+      max-width: 440px; line-height: 1.7;
+      margin-bottom: 40px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .8s .6s forwards;
+    }
+    .hero-actions {
+      position: relative; z-index: 2;
+      display: flex; gap: 20px; align-items: center;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .8s .8s forwards;
+    }
+    .btn-primary {
+      padding: 16px 36px;
+      background: var(--green);
+      color: var(--bg);
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: all .2s;
+    }
+    .btn-primary:hover { background: var(--green2); transform: translateY(-2px); }
+    .btn-ghost {
+      padding: 16px 28px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: all .2s;
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--white); }
+    .scroll-hint {
+      position: absolute; bottom: 30px; right: 48px; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp .8s 1.2s forwards;
+    }
+    .scroll-hint span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; color: var(--muted);
+      text-transform: uppercase; writing-mode: vertical-rl;
+    }
+    .scroll-line {
+      width: 1px; height: 60px;
+      background: linear-gradient(var(--green), transparent);
+      animation: scrollLine 1.5s 1.5s infinite;
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 0 48px;
+    }
+    .stat-item {
+      padding: 40px 0;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; padding-left: 40px; }
+    .stat-item:not(:first-child) { padding-left: 40px; }
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px; font-weight: 700;
+      color: var(--white); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-num span { color: var(--green); }
+    .stat-label {
+      font-size: 13px; color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { padding: 120px 48px; }
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-tag::before {
+      content: '';
+      display: block; width: 24px; height: 1px;
+      background: var(--green);
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.0;
+      margin-bottom: 20px;
+    }
+    .section-intro {
+      font-size: 17px; color: var(--muted);
+      max-width: 520px; line-height: 1.8;
+    }
+
+    /* ─── WORK GRID ─── */
+    #work { padding-bottom: 0; }
+    .work-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 60px;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2px;
+    }
+    .work-item {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      aspect-ratio: 4/3;
+    }
+    .work-item:nth-child(1) { grid-column: span 7; aspect-ratio: 16/9; }
+    .work-item:nth-child(2) { grid-column: span 5; }
+    .work-item:nth-child(3) { grid-column: span 4; }
+    .work-item:nth-child(4) { grid-column: span 8; aspect-ratio: 16/9; }
+    .work-item:nth-child(5) { grid-column: span 6; }
+    .work-item:nth-child(6) { grid-column: span 6; }
+
+    .work-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .work-item:hover .work-bg { transform: scale(1.06); }
+    .work-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(5,6,10,0.92) 100%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .work-item:hover .work-overlay { opacity: 1; }
+    .work-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 28px;
+      transform: translateY(10px);
+      opacity: 0; transition: all .4s;
+    }
+    .work-item:hover .work-info { opacity: 1; transform: translateY(0); }
+    .work-client {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2px;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .work-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 600;
+    }
+    .work-tag {
+      font-size: 13px; color: var(--muted); margin-top: 4px;
+    }
+
+    /* placeholder gradients for work items */
+    .w1 { background: linear-gradient(135deg, #0a1f14 0%, #0d2a1c 100%); }
+    .w2 { background: linear-gradient(135deg, #0e0a1f 0%, #1a0f2e 100%); }
+    .w3 { background: linear-gradient(135deg, #1a0a0a 0%, #2e1010 100%); }
+    .w4 { background: linear-gradient(135deg, #0a0f1f 0%, #101a2e 100%); }
+    .w5 { background: linear-gradient(135deg, #0f1a0a 0%, #1a2e10 100%); }
+    .w6 { background: linear-gradient(135deg, #1a1a0a 0%, #2e2e10 100%); }
+
+    /* Grid lines decorative overlay on work items */
+    .work-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,232,122,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,232,122,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ─── PLATFORM / PRODUCTS ─── */
+    #platform { background: var(--bg); }
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 64px;
+    }
+    .product-card {
+      background: var(--card);
+      padding: 40px;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: border-color .3s;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      transform: scaleX(0); transition: transform .4s;
+    }
+    .product-card:hover { border-color: rgba(0,232,122,0.2); }
+    .product-card:hover::before { transform: scaleX(1); }
+    .product-icon {
+      width: 48px; height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 28px;
+      transition: border-color .3s;
+    }
+    .product-card:hover .product-icon { border-color: var(--green); }
+    .product-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 600;
+      margin-bottom: 12px; letter-spacing: -0.3px;
+    }
+    .product-card p { font-size: 14px; color: var(--muted); line-height: 1.8; }
+    .product-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 24px; font-size: 13px; color: var(--green);
+      text-decoration: none; font-weight: 500;
+      transition: gap .2s;
+    }
+    .product-link:hover { gap: 14px; }
+
+    /* ─── PROVIDERS ─── */
+    #providers { padding: 100px 48px; }
+    .providers-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 56px;
+    }
+    .providers-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 2px;
+    }
+    .provider-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      height: 70px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 600;
+      color: var(--muted);
+      transition: all .3s;
+    }
+    .provider-item:hover { color: var(--white); border-color: rgba(0,232,122,0.2); background: #0f1118; }
+
+    /* ─── MARQUEE CLIENTS ─── */
+    .marquee-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0; overflow: hidden;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      padding: 20px 48px;
+      border-right: 1px solid var(--border);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 600;
+      color: var(--muted); white-space: nowrap;
+      letter-spacing: 0.5px;
+      transition: color .2s;
+    }
+    .marquee-item:hover { color: var(--white); }
+
+    /* ─── AWARD ─── */
+    #award {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: 60vh;
+      padding: 0;
+    }
+    .award-left {
+      padding: 100px 48px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .award-right {
+      padding: 100px 48px;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .award-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,232,122,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .award-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .award-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(40px, 5vw, 72px);
+      font-weight: 700; letter-spacing: -2px;
+      line-height: 0.95; margin-bottom: 20px;
+    }
+    .award-title em { font-style: normal; color: var(--green); }
+    .award-desc {
+      font-size: 15px; color: var(--muted); line-height: 1.8;
+      max-width: 380px;
+    }
+    .award-items { display: flex; flex-direction: column; gap: 24px; position: relative; }
+    .award-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 24px;
+      border: 1px solid var(--border); border-radius: 4px;
+      background: rgba(0,232,122,0.02);
+      transition: border-color .3s;
+    }
+    .award-item:hover { border-color: rgba(0,232,122,0.3); }
+    .award-item-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+    .award-item h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px; font-weight: 600; margin-bottom: 6px;
+    }
+    .award-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ─── CTA SECTION ─── */
+    #cta {
+      padding: 160px 48px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,232,122,0.05) 0%, transparent 70%);
+    }
+    .cta-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--green); text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    #cta h2 {
+      font-size: clamp(48px, 7vw, 96px);
+      margin-bottom: 24px; position: relative;
+    }
+    #cta .section-intro { margin: 0 auto 48px; }
+    .cta-actions {
+      display: flex; gap: 16px; justify-content: center;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 48px; align-items: start;
+    }
+    .footer-brand .nav-logo { font-size: 20px; margin-bottom: 10px; display: block; }
+    .footer-brand p { font-size: 13px; color: var(--muted); max-width: 240px; line-height: 1.6; }
+    .footer-col h5 {
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px; font-weight: 500;
+    }
+    .footer-col a {
+      display: block; text-decoration: none;
+      color: var(--muted); font-size: 14px; margin-bottom: 10px;
+      transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: 13px; color: var(--muted); }
+
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,232,122,0.3); }
+      50%       { box-shadow: 0 0 0 12px rgba(0,232,122,0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      #hero { padding: 0 24px 60px; }
+      section, #providers { padding: 80px 24px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 0 24px; }
+      .stat-item:nth-child(2) { border-right: none; }
+      .work-item:nth-child(n) { grid-column: span 12; }
+      .platform-grid { grid-template-columns: 1fr; }
+      .providers-grid { grid-template-columns: repeat(4, 1fr); }
+      #award { grid-template-columns: 1fr; }
+      .award-left, .award-right { padding: 60px 24px; }
+      footer { grid-template-columns: 1fr 1fr; padding: 40px 24px; }
+      .footer-bottom { padding: 20px 24px; flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">NGX<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#work">Clientes</a></li>
+    <li><a href="#platform">Plataforma</a></li>
+    <li><a href="#providers">Provedores</a></li>
+    <li><a href="#award">Diferenciais</a></li>
+    <li><a href="#cta" class="nav-cta">Demo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-noise"></div>
+  <div class="hero-gradient"></div>
+
+  <p class="hero-tag">// iGaming Technology Platform</p>
+  <h1 class="hero-h1">
+    Eleve<br/>
+    seu <em>jogo</em><br/>
+    com a NGX
+  </h1>
+  <p class="hero-sub">
+    Plataforma all-in-one modular, flexível e escalável para operadores de iGaming.<br/>
+    Da tecnologia à conformidade regulatória — tudo em um só lugar.
+  </p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">Agendar Demo</a>
+    <a href="#platform" class="btn-ghost">Conhecer a Plataforma</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="counter" data-target="40">0</span><span>+</span></div>
+    <div class="stat-label">Provedores integrados</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <div class="stat-num"><span class="counter" data-target="8">0</span></div>
+    <div class="stat-label">Operadores ativos</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <div class="stat-num"><span class="counter" data-target="24">0</span><span>/7</span></div>
+    <div class="stat-label">Suporte especializado</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <div class="stat-num"><span>GLI</span></div>
+    <div class="stat-label">Certificação nacional e internacional</div>
+  </div>
+</div>
+
+<!-- WORK / CLIENTS -->
+<section id="work">
+  <div class="work-header">
+    <div>
+      <p class="section-tag reveal">Clientes</p>
+      <h2 class="reveal reveal-delay-1">Operadores<br/>que confiam<br/>na NGX</h2>
+    </div>
+    <p class="section-intro reveal reveal-delay-2" style="text-align:right; max-width:320px;">
+      Parceiros que escolheram a plataforma mais completa do mercado brasileiro de iGaming.
+    </p>
+  </div>
+
+  <div class="work-grid">
+    <div class="work-item">
+      <div class="work-bg w1"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Lottu</div>
+        <div class="work-tag">Sportsbook · Casino · API</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-bg w2"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Obabet</div>
+        <div class="work-tag">Plataforma Completa</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-bg w3"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Marjosports</div>
+        <div class="work-tag">Sportsbook · Widgets</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-bg w4"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Brbet</div>
+        <div class="work-tag">Integração API · Live</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-bg w5"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Apostou</div>
+        <div class="work-tag">Casino · Responsabilidade</div>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-bg w6"></div>
+      <div class="work-overlay"></div>
+      <div class="work-info">
+        <div class="work-client">Cliente</div>
+        <div class="work-title">Starsports</div>
+        <div class="work-tag">Plataforma · Relatórios</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE CLIENTS -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">Lottu</div>
+    <div class="marquee-item">Obabet</div>
+    <div class="marquee-item">Marjosports</div>
+    <div class="marquee-item">Brbet</div>
+    <div class="marquee-item">Apostou</div>
+    <div class="marquee-item">Clube do Bet</div>
+    <div class="marquee-item">Playbonds</div>
+    <div class="marquee-item">Starsports</div>
+    <div class="marquee-item">Lottu</div>
+    <div class="marquee-item">Obabet</div>
+    <div class="marquee-item">Marjosports</div>
+    <div class="marquee-item">Brbet</div>
+    <div class="marquee-item">Apostou</div>
+    <div class="marquee-item">Clube do Bet</div>
+    <div class="marquee-item">Playbonds</div>
+    <div class="marquee-item">Starsports</div>
+  </div>
+</div>
+
+<!-- PLATFORM -->
+<section id="platform">
+  <p class="section-tag reveal">Plataforma</p>
+  <h2 class="reveal reveal-delay-1">Tudo que um<br/>operador precisa.</h2>
+  <p class="section-intro reveal reveal-delay-2">
+    Solução modular e escalável. Você escolhe os módulos, nós garantimos a operação.
+  </p>
+
+  <div class="platform-grid">
+    <div class="product-card reveal">
+      <div class="product-icon">🏟️</div>
+      <h3>Sportsbook iFrame</h3>
+      <p>Integração de apostas esportivas rápida e flexível. Pronto para o seu site em horas, não semanas.</p>
+      <a href="#cta" class="product-link">Ver demo <span>→</span></a>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <div class="product-icon">🎰</div>
+      <h3>Casino & Slots</h3>
+      <p>Acesso a Evolution, Pragmatic Play, PG Soft, Playtech, BGaming e mais 35 provedores premium.</p>
+      <a href="#cta" class="product-link">Ver provedores <span>→</span></a>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <div class="product-icon">⚡</div>
+      <h3>Widgets Dinâmicos</h3>
+      <p>Componentes prontos para engajamento do usuário. Odds ao vivo, resultados, rankings em tempo real.</p>
+      <a href="#cta" class="product-link">Explorar <span>→</span></a>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <div class="product-icon">📊</div>
+      <h3>Relatórios em Tempo Real</h3>
+      <p>Dashboard completo com analytics de performance, comportamento do jogador e KPIs operacionais.</p>
+      <a href="#cta" class="product-link">Ver dashboard <span>→</span></a>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <div class="product-icon">🔌</div>
+      <h3>API Integration Hub</h3>
+      <p>Conecte com os maiores provedores do mercado via APIs documentadas e suporte técnico dedicado.</p>
+      <a href="#cta" class="product-link">Documentação <span>→</span></a>
+    </div>
+    <div class="product-card reveal reveal-delay-3">
+      <div class="product-icon">🛡️</div>
+      <h3>Compliance & Regulatório</h3>
+      <p>Ferramentas de jogo responsável, geolocalização, conformidade com regulamentação brasileira e GLI.</p>
+      <a href="#cta" class="product-link">Saiba mais <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- PROVIDERS -->
+<section id="providers">
+  <div class="providers-header">
+    <div>
+      <p class="section-tag reveal">Ecossistema</p>
+      <h2 class="reveal reveal-delay-1">40+ Provedores<br/>integrados</h2>
+    </div>
+    <p class="section-intro reveal reveal-delay-2" style="max-width:300px; text-align:right;">
+      Os maiores names do iGaming global, disponíveis na sua plataforma.
+    </p>
+  </div>
+  <div class="providers-grid reveal">
+    <div class="provider-item">Evolution</div>
+    <div class="provider-item">Pragmatic</div>
+    <div class="provider-item">PG Soft</div>
+    <div class="provider-item">Playtech</div>
+    <div class="provider-item">BGaming</div>
+    <div class="provider-item">NetEnt</div>
+    <div class="provider-item">Microgaming</div>
+    <div class="provider-item">Betsoft</div>
+    <div class="provider-item">Hacksaw</div>
+    <div class="provider-item">Push Gaming</div>
+    <div class="provider-item">Nolimit City</div>
+    <div class="provider-item">Play'n GO</div>
+    <div class="provider-item">Yggdrasil</div>
+    <div class="provider-item">Red Tiger</div>
+    <div class="provider-item">Blueprint</div>
+    <div class="provider-item">+ 25 mais</div>
+  </div>
+</section>
+
+<!-- AWARD / DIFERENCIAIS -->
+<section id="award" style="padding:0;">
+  <div class="award-left">
+    <div class="award-badge">// SiGMA Awards 2025</div>
+    <h2 class="award-title">Rising<br/><em>Star</em><br/>Award.</h2>
+    <p class="award-desc">
+      Reconhecidos internacionalmente como a plataforma de iGaming em maior crescimento da América Latina.
+      A única plataforma brasileira membro da CIBELAE.
+    </p>
+  </div>
+  <div class="award-right">
+    <div class="award-glow"></div>
+    <div class="award-items">
+      <div class="award-item reveal">
+        <div class="award-item-icon">🇧🇷</div>
+        <div>
+          <h4>100% Brasileiro</h4>
+          <p>Sede em Campina Grande, PB. Suporte em português, conhecimento do mercado local.</p>
+        </div>
+      </div>
+      <div class="award-item reveal reveal-delay-1">
+        <div class="award-item-icon">⚽</div>
+        <div>
+          <h4>3 Federações de Futebol</h4>
+          <p>Parceira oficial de três federações brasileiras de futebol, com acesso a dados exclusivos.</p>
+        </div>
+      </div>
+      <div class="award-item reveal reveal-delay-2">
+        <div class="award-item-icon">🏆</div>
+        <div>
+          <h4>Certificação GLI</h4>
+          <p>Certificação nacional e internacional. Conformidade total com a regulamentação vigente.</p>
+        </div>
+      </div>
+      <div class="award-item reveal reveal-delay-3">
+        <div class="award-item-icon">🌎</div>
+        <div>
+          <h4>CIBELAE</h4>
+          <p>Único membro brasileiro da associação ibero-americana de loterias e apostas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <p class="cta-tag reveal">// Próximo passo</p>
+  <h2 class="reveal reveal-delay-1">Pronto para<br/><em style="font-style:normal;color:var(--green)">elevar</em><br/>seu jogo?</h2>
+  <p class="section-intro reveal reveal-delay-2">
+    Agende uma demonstração e veja como a NGX pode transformar sua operação de iGaming.
+  </p>
+  <div class="cta-actions reveal reveal-delay-3">
+    <a href="mailto:commercial@ngxbrasil.com" class="btn-primary">Agendar Demo</a>
+    <a href="https://www.ngxbrasil.com" class="btn-ghost" target="_blank">Ver Site Completo</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <span class="nav-logo">NGX<span style="color:var(--green)">.</span></span>
+    <p>Plataforma all-in-one de iGaming para operadores que querem crescer com segurança.</p>
+  </div>
+  <div class="footer-col">
+    <h5>Plataforma</h5>
+    <a href="#">Sportsbook</a>
+    <a href="#">Casino</a>
+    <a href="#">Widgets</a>
+    <a href="#">API</a>
+  </div>
+  <div class="footer-col">
+    <h5>Empresa</h5>
+    <a href="#">Sobre nós</a>
+    <a href="#">Eventos</a>
+    <a href="#">Blog</a>
+    <a href="#">Contato</a>
+  </div>
+  <div class="footer-col">
+    <h5>Social</h5>
+    <a href="https://instagram.com/ngx.bet" target="_blank">Instagram</a>
+    <a href="#" target="_blank">LinkedIn</a>
+    <a href="#" target="_blank">YouTube</a>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 NGX — Todos os direitos reservados.</p>
+  <p style="color:var(--muted);font-size:13px;">Campina Grande, PB · Brazil</p>
+</div>
+
+<script>
+  /* ─── CURSOR ─── */
+  const cursor = document.getElementById('cursor');
+  const trail  = document.getElementById('cursor-trail');
+  let mx = 0, my = 0, tx = 0, ty = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+
+  function animateTrail() {
+    tx += (mx - tx) * 0.12;
+    ty += (my - ty) * 0.12;
+    trail.style.left = tx + 'px';
+    trail.style.top  = ty + 'px';
+    requestAnimationFrame(animateTrail);
+  }
+  animateTrail();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width  = '20px';
+      cursor.style.height = '20px';
+      trail.style.width   = '56px';
+      trail.style.height  = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width  = '10px';
+      cursor.style.height = '10px';
+      trail.style.width   = '36px';
+      trail.style.height  = '36px';
+    });
+  });
+
+  /* ─── CANVAS PARTICLE NETWORK ─── */
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COUNT = 80;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.r  = Math.random() * 1.5 + 0.5;
+      this.alpha = Math.random() * 0.5 + 0.1;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,232,122,${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+  function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,232,122,${0.06 * (1 - d/140)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawConnections();
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  /* ─── SCROLL REVEAL ─── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ─── COUNTER ANIMATION ─── */
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let start = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) { el.textContent = target; clearInterval(timer); }
+        else { el.textContent = Math.floor(start); }
+      }, 30);
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
